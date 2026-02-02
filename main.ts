@@ -23,6 +23,7 @@ const cookies = {
   async setTokens(ctx: Ctx, tokens: Tokens) {
     return await ctx.cookies.set("tokens", JSON.stringify(tokens), {
       secure: Deno.env.get("REDIRECT_URI")?.startsWith("https"),
+      ignoreInsecure: true,
       sameSite: true,
       httpOnly: true,
     });
