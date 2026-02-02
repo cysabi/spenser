@@ -109,9 +109,8 @@ const getName = async (ctx: Ctx) => {
       ctx.response.body = { message: "invalid session" };
       return false;
     }
-
-    return name;
   }
+  return name;
 };
 
 const fetchRcApi = async (accessToken: string) => {
@@ -168,9 +167,21 @@ router.get("/api/status", async (ctx) => {
   ctx.response.body = await status.read();
 });
 
-router.post("/api/status/:key", async (ctx) => {
+router.all("/api/status/:key", async (ctx) => {
+  if (!["POST", "GET"].includes(ctx.request.method)) {
+    ctx.response.status = 405;
+    return;
+  }
+
   const me = await getName(ctx);
-  if (me === false) return;
+  if (me === false) {
+    if (ctx.request.method === "GET") {
+      return ctx.response.redirect("/api/login");
+    }
+    if (ctx.request.method === "POST") {
+      return;
+    }
+  }
 
   const currentStatus = await status.read();
 
@@ -182,10 +193,15 @@ router.post("/api/status/:key", async (ctx) => {
 
   await status.write({
     ...currentStatus,
-    [ctx.params.key]: new Date().toISOString(),
+    [ctx.params.key]: new Date("2026-01-29T15:32:41.000Z").toISOString(),
   });
 
-  ctx.response.body = await status.read();
+  if (ctx.request.method === "GET") {
+    return ctx.response.redirect("/");
+  }
+  if (ctx.request.method === "POST") {
+    ctx.response.body = await status.read();
+  }
 });
 
 // main

@@ -257,31 +257,34 @@
           super();
           const shadow = this.attachShadow({ mode: "open" });
           shadow.innerHTML = `
-            <div>
+            <a id="link">
               <style>
                 @scope {
-                  text-align: right;
-                  #hover {
+                  .mouse-on {
                     display: none;
                   }
                   &:hover {
-                    #content {
+                    .mouse-off {
                       display: none;
                     }
-                    #hover {
-                      display: inline;
+                    .mouse-on {
                       font-weight: 500;
+                      display: inline;
                     }
                   }
+
+                  text-align: right;
+                  text-decoration: underline;
                   strong {
                     font-weight: 600;
                   }
                 }
               </style>
-              <span id="content"></span>
-              <a id="hover"></a>
-            </div>
+              <span id="content" class="mouse-off"></span>
+              <span id="hover" class="mouse-on"></span>
+            </a>
           `;
+          const linkElem = shadow.getElementById("link");
           const contentElem = shadow.getElementById("content");
           const hoverElem = shadow.getElementById("hover");
 
@@ -289,11 +292,11 @@
             if (me) {
               contentElem.innerHTML = `you are <strong>${me}!</strong>`;
               hoverElem.innerHTML = `log out?`;
-              hoverElem.href = "/api/logout";
+              linkElem.href = "/api/logout";
             } else {
               contentElem.innerHTML = `you are?`;
               hoverElem.innerHTML = `log in?`;
-              hoverElem.href = "/api/login";
+              linkElem.href = "/api/login";
             }
           });
         }
@@ -338,10 +341,11 @@
         };
         htmlStatus(verb, date) {
           const hours = Math.floor((new Date() - date) / 36e5);
+          const days = Math.floor(hours / 24);
           const text =
             hours > 48
-              ? `${Math.floor(hours / 24)} days ago`
-              : `${hours} hours ago`;
+              ? `${days} day${days === 1 ? "" : "s"} ago`
+              : `${hours} hour${hours === 1 ? "" : "s"} ago`;
 
           const benchmark = this.benchmarks[verb];
           benchmark.push(
@@ -369,14 +373,29 @@
               </style>
               <div>
                 <span>i was last ${verb}</span>
-                <span>
+                <a href="/api/status/last_${verb}">
                   <style>
                     @scope {
+                      .mouse-on {
+                        display: none;
+                      }
+                      &:hover {
+                        .mouse-off {
+                          display: none;
+                        }
+                        .mouse-on {
+                          font-weight: 500;
+                          display: inline;
+                        }
+                      }
+
                       color: ${color};
+                      text-decoration: underline;
                     }
                   </style>
-                  ${text}</span
-                >.
+                  <span class="mouse-off">${text}.</span>
+                  <span class="mouse-on">just now?</span>
+                </a>
               </div>
               <div>
                 <style>
@@ -420,17 +439,12 @@
         }
 
         async getStatus() {
-          const verb = this.dataset.verb;
           const resp = await fetch("/api/status");
           const json = await resp.json();
           return {
             last_emptied: new Date(json.last_emptied),
             last_cleaned: new Date(json.last_cleaned),
           };
-        }
-
-        async updateStatus(key) {
-          await fetch(`/api/status/${key}`, { method: "POST" });
         }
       }
 
