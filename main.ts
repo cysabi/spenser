@@ -194,7 +194,7 @@ router.all("/api/status/:key", async (ctx) => {
 
   await status.write({
     ...currentStatus,
-    [ctx.params.key]: new Date("2026-01-29T15:32:41.000Z").toISOString(),
+    [ctx.params.key]: new Date().toISOString(),
   });
 
   if (ctx.request.method === "GET") {
