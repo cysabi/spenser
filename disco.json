@@ -10,11 +10,5 @@
         }
       ]
     }
-  },
-  "images": {
-    "default": {
-      "dockerfile": "server/Dockerfile",
-      "context": "server/."
-    }
   }
 }
