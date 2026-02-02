@@ -252,6 +252,9 @@
       </a>
     </sub>
     <script type="module">
+      if (window.location.href.startsWith("https://spenser.rcdis.co")) {
+        window.location.replace("https://spenser.recurse.com");
+      }
       class UserBox extends HTMLElement {
         constructor() {
           super();
