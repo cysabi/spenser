@@ -36,6 +36,10 @@
         line-height: 1.5;
         -webkit-font-smoothing: antialiased;
         background-color: rgb(from rosybrown r g b / 50%);
+        @media print {
+          background-color: transparent;
+          margin: 0 2.5rem;
+        }
       }
       img,
       picture,
@@ -119,6 +123,18 @@
             font-weight: 500;
           }
         }
+
+        .showOnPrint {
+          display: none;
+          @media print {
+            display: block;
+          }
+        }
+        .hideOnPrint {
+          @media print {
+            display: none;
+          }
+        }
       }
     </style>
     <div>
@@ -156,7 +172,9 @@
           }
         </style>
         <h1>hi! my name is spen<strong>s</strong>er</h1>
-        <user-box />
+        <div class="hideOnPrint">
+          <user-box />
+        </div>
       </div>
       <sub>
         i'm a hot water boiler/dispenser next to the communal fridge. welcome to
@@ -168,6 +186,9 @@
         @scope {
           display: flex;
           @media screen and (max-width: 1080px) {
+            flex-direction: column;
+          }
+          @media print {
             flex-direction: column;
           }
           gap: 1rem;
@@ -200,11 +221,15 @@
           <strong>i am only designed for water!</strong><br />please dont put
           anything else in me.
         </div>
-        <p>
+        <p class="hideOnPrint">
           you can find the manual for me
           <a target="_blank" rel="noopener noreferrer" href="/manual.pdf"
             >here!</a
           >
+        </p>
+        <p class="showOnPrint">
+          check the manual & find more info at
+          <a href="https://spenser.recurse.com">spenser.recurse.com</a>!
         </p>
       </aside>
       <aside>
@@ -230,6 +255,10 @@
         @scope {
           span {
             background-color: rgb(from mistyrose r g b / 50%);
+            @media print {
+              background-color: transparent;
+              font-weight: 500;
+            }
           }
         }
       </style>
@@ -241,8 +270,8 @@
       <span>kunal marwaha</span>, <span>clarence bowen</span> for helping
       crowdfund this!
     </sub>
-    <sub
-      >have more questions? check
+    <sub class="hideOnPrint">
+      have more questions? check
       <a
         target="_blank"
         rel="noopener noreferrer"
@@ -370,6 +399,9 @@
             <div>
               <style>
                 @scope {
+                  @media print {
+                    display: none;
+                  }
                   display: flex;
                   flex-direction: column;
                   gap: 0.5rem;
